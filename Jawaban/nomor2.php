@@ -1,108 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  		<title>Check Your Age</title>
+  </head>
+
+  <body>
+    <div class="container col-md-3">
+        <center><h3 class="mt-4">How old are you?</h3></center>
+  </body>
+</html>
+
 <?php
 
-interface Kalkulator_BangunRuang {
-    public function hitungBangunRuang($satuan);
-}
+$data = [
+    'name' => 'Lintang Fauziyatu Azmi', 
+    'email' => 'lintang1900018258@webmail.uad.ac.id',
+    'dob' => '04.10.1999'
+];       
 
-class PersegiPanjang implements Kalkulator_BangunRuang {
-    public $panjang;
-    public $lebar;
+class Simple {
+    public $name;
+    public $email;
+    public $dob;
 
-    public function hitungBangunRuang($satuan) {
-        $this->panjang = $satuan['panjang'];
-        $this->lebar = $satuan['lebar'];
-        return ('Bangun Ruang : Persegi Panjang<br>'.
-                'Panjang : '.$this->panjang.' m<br>'.
-                'Lebar : '.$this->lebar.' m<br>'.
-                'Rumus : panjang x lebar<br>'.
-                'Luas Persegi Panjang : '.$this->panjang * $this->lebar.' m2');
+    public function __construct($data) {
+        $this->name = $data['name'];
+        $this->email = $data['email'];
+        $this->dob = $data['dob'];
     }
 }
 
-class Bola implements Kalkulator {
-    public $jari;
-
-    public function hitungBangunRuang($satuan) {
-        $this->jari = $satuan['jari'];
-        return ('Bangun Ruang : Bola<br>'.
-                'Jari-jari (r) : '.$this->jari.' m<br>'.
-                'Rumus : 4/3 x phi x r x r x r<br>'.
-                'Volume Bola : '.(4/3) * pi() * $this->jari * $this->jari * $this->jari.' m3');
+class Age {
+    public static function getAge($data){
+        $birth = new DateTime($data['dob']);
+        $today = new Datetime(date('d.m.y'));
+        $age = $today->diff($birth);
+        return 'Your Age is : '.$age->y.' years, '.$age->m.' months '.$age->d.' days ';
     }
 }
 
-class Kerucut implements Kalkulator {
-    public $tinggi;
-    public $jari;
+class UserRequest {
+    protected static $rules = [
+        'name' => 'string',
+        'email' => 'string',
+        'dob' => 'string'
+    ];
 
-    public function hitungBangunRuang($satuan) {
-        $this->tinggi = $satuan['tinggi'];
-        $this->jari = $satuan['jari'];
-        return ('Bangun Ruang : Kerucut<br>'.
-                'Tinggi : '.$this->tinggi.' m<br>'.
-                'jari (r) : '.$this->jari.' m<br>'.
-                'Rumus : 1/3 x luas alas (lingkaran: phi*r*r) x t<br>'.
-                'Volume Kerucut : '.(1/3) * pi() * $this->jari * $this->jari * $this->tinggi.' m3');
-    }
-}
-
-class Kubus implements Kalkulator {
-    public $rusuk;
-
-    public function hitungBangunRuang($satuan) {
-        $this->rusuk = $satuan['rusuk'];
-        return ('Bangun Ruang : Kubus<br>'.
-                'Panjang Rusuk (r) : '.$this->rusuk.' m<br>'.
-                'Rumus : r x r x r<br>'.
-                'Volume Kubus : '.$this->rusuk * $this->rusuk * $this->rusuk.' m3');
-    }
-}
-
-class Lingkaran implements Kalkulator {
-    public $jari;
-    public function hitungBangunRuang($satuan) {
-        $this->jari = $satuan['jari'];
-        return ('Bangun Ruang : Lingkaran<br>'.
-                'jari (r) : '.$this->jari.' m<br>'.
-                'Rumus : 2 x phi x r<br>'.
-                'Keliling Lingkaran : '.(2 * pi() * $this->jari.' m'));
-    }
-}
-
-class KalkulatorBangunRuangFactory {
-    public function initializeKalkulatorBangunRuang($menu) {
-        if ($menu === 'luasPersegiPanjang') {
-            return new PersegiPanjang();
+    public static function validate($data){
+        foreach (static::$rules as $property => $type){
+            if (gettype($data[$property]) != $type){
+                throw new \Exception("User property {$property} must be of type {$type}" );
+            }
         }
-        if ($menu == 'volumeBola') {
-            return new Bola();
-        }
-        if ($menu === 'volumeKerucut') {
-            return new Kerucut();
-        }
-        if ($menu === 'volumeKubus') {
-            return new Kubus();
-        }
-        if ($menu === 'kelilingLingkaran') {
-            return new Lingkaran();
-        }
-
-        throw new Exception("Tidak ada pilihan tersebut!");
     }
 }
 
-$satuan = ['rusuk'=> 12, 'panjang'=> 0, 'lebar'=> 0, 'jari'=> 0, 'tinggi'=>0];
 class Json {
     public static function form($data){
         return json_encode($data);
     }
 }
-echo 'Input : <br>';
-print(Json::form($satuan));
-echo '<br><br>';
 
-$pilihanKalkulatorBangunRuang = 'volumeKubus';
-$kalkulatorBangunRuangFactory = new KalkulatorBangunRuangFactory();
-$kalkulatorBangunRuang = $kalkulatorBangunRuangFactory->initializeKalkulatorBangunRuang($pilihanKalkulatorBangunRuang);
-$hasilKalkulatorBangunRuang = $kalkulatorBangunRuang->hitungBangunRuang($satuan);
-print_r($hasilKalkulatorBangunRuang);
+class Output {
+    public static function out($data){
+        print(Json::form($data));
+        echo '<br><br>';
+        print(Age::getAge($data));
+    }
+}
+
+UserRequest::validate($data);
+return Output::out($data);
