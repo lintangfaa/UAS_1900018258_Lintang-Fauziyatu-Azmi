@@ -14,6 +14,7 @@
     Karena sebuah class hanya memiliki satu tanggungjawab, maka class tersebut akan dapat digunakan Kembali tanpa modifikasi. Karena jika sebuah kelas memiliki banyak tanggung jawab, dan hanya satu yang diperlukan di software, maka tanggung jawab lain yang tidak perlu akan menghalangi penggunaan Kembali class tersebut.
 
 </p>
+
 ### b. Open/Closed Principle
 <p>
     Prinsip pemrograman yang setiap atribut software (class, function, modul) hanya dapat dilakukan/terbuka penambahan code tetapi tidak dapat/tertutup untuk modifikasi atau perubahan. Intitnya, code program yang sebelumnya sudah ada, tidak dapat diganti lagi hanya dapat dilakukan penambahan-penambahan class yang nantinya tetap memiliki tujuan yang sama.
